@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products');
             $table->string('sku');
-            $table->string('bar_code');
+            $table->bigInteger('bar_code');
             $table->string('image');
             $table->integer('stock');
             $table->string('attribute')->comment('nombre del atributo(color-aroma), [rojo, blanco, manzana, frutilla]');

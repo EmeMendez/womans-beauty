@@ -20,14 +20,14 @@ return new class extends Migration
             $table->foreignId('variant_id')->contrained('variants')->nullable();
             $table->foreignId('user_id')->contrained('users')->comment('usuario que creó al usuario');
             $table->string('sku')->nullable();
-            $table->integer('bar_code')->nullable();
+            $table->bigInteger('bar_code')->nullable();
             $table->string('name');
             $table->text('description');
             $table->string('image');
             $table->integer('stock')->nullable();
             $table->integer('price')->nullable();
             $table->integer('measure');
-            $table->integer('unit_measure');
+            $table->string('unit_measure', 2);
             $table->boolean('is_active')->default(true);
             $table->boolean('is_discontinued')->default(false);
             $table->timestamps();
