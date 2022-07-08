@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryStoreRequest;
+use App\Http\Requests\CategoryUpdateRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -37,6 +38,13 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         return new CategoryResource(Category::findOrFail($category->id));
+    }
+
+    public function update(CategoryUpdateRequest $request, Category $category)
+    {
+        $category->name = $request->name;
+        $category->save();
+        return new CategoryResource($category);
     }
 
 }

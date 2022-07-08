@@ -6,12 +6,13 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class CategoryControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, WithFaker;
 
     protected function conditionalSetUp(): void
     {
@@ -137,6 +138,53 @@ class CategoryControllerTest extends TestCase
         ];
 
         $response = $this->postJson('/api/v1/categories', $data);
+        $response->assertStatus(401);
+        $response->assertJsonFragment([
+            'message' => 'Unauthenticated.'
+        ]);
+    }
+
+    public function test_update()
+    {
+        $this->conditionalSetUp();
+        $category = Category::factory()->create();
+        $data = [
+          'name' => $this->faker->word
+        ];
+        $response = $this->patchJson("/api/v1/categories/$category->id", $data);
+        $response->assertStatus(200);
+        $response->assertJsonFragment([
+            'name' => $data['name']
+        ]);
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+                'created_at',
+                'updated_at'
+            ]
+        ]);
+    }
+
+    public function test_update_name_required()
+    {
+        $this->conditionalSetUp();
+        $category = Category::factory()->create();
+        $data = [];
+        $response = $this->patchJson("/api/v1/categories/$category->id", $data);
+        $response->assertStatus(422);
+        $response->assertJsonFragment([
+            'name' => ['El nombre es requerido']
+        ]);
+    }
+
+    public function test_update_no_authorized()
+    {
+        $category = Category::factory()->create();
+        $data = [
+            'name' => $this->faker->word
+        ];
+        $response = $this->patchJson("/api/v1/categories/$category->id", $data);
         $response->assertStatus(401);
         $response->assertJsonFragment([
             'message' => 'Unauthenticated.'
