@@ -18,7 +18,10 @@ use App\Http\Controllers\Api\CategoryController;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+//  return $request->user();
 });
 
 Route::post('/v1/login', [AuthController::class, 'login']);
+
+Route::get('/v1/categories', [CategoryController::class, 'index']);
+
