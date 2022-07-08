@@ -47,4 +47,38 @@ class CategoryControllerTest extends TestCase
         $response = $this->getJson('/api/v1/categories');
         $response->assertStatus(401);
     }
+
+    public function test_store()
+    {
+        $this->conditionalSetUp();
+
+        $category = Category::factory()->make();
+        $data = [
+          'name' => $category->name
+        ];
+
+        $response = $this->postJson('/api/v1/categories', $data);
+        $response->assertStatus(201);
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+                'created_at',
+                'updated_at'
+             ]
+        ]);
+        $response->assertJsonFragment([
+            'name' => $category->name
+        ]);
+    }
+    public function test_store_no_authorized()
+    {
+        $category = Category::factory()->make();
+        $data = [
+            'name' => $category->name
+        ];
+
+        $response = $this->postJson('/api/v1/categories', $data);
+        $response->assertStatus(401);
+    }
 }

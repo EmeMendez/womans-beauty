@@ -22,4 +22,20 @@ class CategoryController extends Controller
     {
         return new CategoryCollection(Category::all());
     }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function store(Request $request)
+    {
+        $category = Category::create($request->only('name'));
+
+        return response()->json(
+            [
+                'data' => $category
+            ]
+            , 201);
+    }
+
 }
