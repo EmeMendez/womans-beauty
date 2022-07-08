@@ -46,7 +46,52 @@ class CategoryControllerTest extends TestCase
         Category::factory(3)->create();
         $response = $this->getJson('/api/v1/categories');
         $response->assertStatus(401);
+        $response->assertJsonFragment([
+            'message' => 'Unauthenticated.'
+        ]);
     }
+
+    public function test_show()
+    {
+        $this->conditionalSetUp();
+        $category = Category::factory()->create();
+        $response = $this->getJson("/api/v1/categories/$category->id");
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+                'data' => [
+                        'id',
+                        'name',
+                        'created_at',
+                        'updated_at'
+                    ]
+                ]
+        );
+        $response->assertJsonFragment([
+            'name' => $category->name
+        ]);
+    }
+
+    public function test_show_not_found()
+    {
+        $this->conditionalSetUp();
+        $category = Category::factory()->make(['id' => 1000]);
+        $response = $this->getJson("/api/v1/categories/$category->id");
+        $response->assertStatus(404);
+        $response->assertJsonFragment([
+            'message' => 'Recurso no encontrado'
+        ]);
+    }
+
+    public function test_show_no_authorized()
+    {
+        $category = Category::factory()->create();
+        $response = $this->getJson("/api/v1/categories/$category->id");
+        $response->assertStatus(401);
+        $response->assertJsonFragment([
+            'message' => 'Unauthenticated.'
+        ]);
+    }
+
 
     public function test_store()
     {
@@ -93,5 +138,11 @@ class CategoryControllerTest extends TestCase
 
         $response = $this->postJson('/api/v1/categories', $data);
         $response->assertStatus(401);
+        $response->assertJsonFragment([
+            'message' => 'Unauthenticated.'
+        ]);
     }
+
+
+
 }
