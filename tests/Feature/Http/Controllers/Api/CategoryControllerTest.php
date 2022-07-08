@@ -71,6 +71,19 @@ class CategoryControllerTest extends TestCase
             'name' => $category->name
         ]);
     }
+
+    public function test_store_name_required()
+    {
+        $this->conditionalSetUp();
+        $data = [];
+
+        $response = $this->postJson('/api/v1/categories', $data);
+        $response->assertStatus(422);
+        $response->assertJsonFragment([
+            'name' => ['El nombre es requerido']
+        ]);
+    }
+
     public function test_store_no_authorized()
     {
         $category = Category::factory()->make();
