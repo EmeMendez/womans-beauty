@@ -3,23 +3,22 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Http\Resources\BrandCollection;
 use Illuminate\Http\Request;
-use App\Http\Resources\CategoryCollection;
+use App\Models\Brand;
 
-class CategoryController extends Controller
+class BrandController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth:sanctum');
     }
 
     /**
-     * @return CategoryCollection
+     * @return BrandCollection
      */
     public function index()
     {
-        return new CategoryCollection(Category::all());
+        return new BrandCollection(Brand::all());
     }
 }
