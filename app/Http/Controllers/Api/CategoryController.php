@@ -47,4 +47,11 @@ class CategoryController extends Controller
         return new CategoryResource($category);
     }
 
+    public function delete(Category $category)
+    {
+        $category->status = 0;
+        $category->save();
+        return response()->json([], 204);
+    }
+
 }

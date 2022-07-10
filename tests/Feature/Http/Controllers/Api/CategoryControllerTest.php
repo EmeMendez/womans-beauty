@@ -34,6 +34,7 @@ class CategoryControllerTest extends TestCase
                 '*' => [
                     'id',
                     'name',
+                    'status',
                     'created_at',
                     'updated_at'
                 ]
@@ -62,6 +63,7 @@ class CategoryControllerTest extends TestCase
                 'data' => [
                         'id',
                         'name',
+                        'status',
                         'created_at',
                         'updated_at'
                     ]
@@ -109,6 +111,7 @@ class CategoryControllerTest extends TestCase
             'data' => [
                 'id',
                 'name',
+                'status',
                 'created_at',
                 'updated_at'
              ]
@@ -160,9 +163,24 @@ class CategoryControllerTest extends TestCase
             'data' => [
                 'id',
                 'name',
+                'status',
                 'created_at',
                 'updated_at'
             ]
+        ]);
+    }
+
+    public function test_update_resource_not_found()
+    {
+        $this->conditionalSetUp();
+        $category = Category::factory()->make(['id' => $this->faker->ean8()]);
+        $data = [
+            'name' => $this->faker->word
+        ];
+        $response = $this->patchJson("/api/v1/categories/$category->id", $data);
+        $response->assertStatus(404);
+        $response->assertJsonFragment([
+            'message' => 'Recurso no encontrado'
         ]);
     }
 
@@ -191,6 +209,40 @@ class CategoryControllerTest extends TestCase
         ]);
     }
 
+    public function test_delete()
+    {
+        $this->conditionalSetUp();
+        $category = Category::factory()->create();
 
+        $response = $this->deleteJson("/api/v1/categories/$category->id");
+        $response->assertStatus(204);
+        $this->assertDatabaseHas('categories', [
+            'id'        => $category->id,
+            'status'    => 0
+        ]);
+    }
+
+    public function test_delete_resource_not_found()
+    {
+        $this->conditionalSetUp();
+        $category = Category::factory()->make(['id' => $this->faker->ean8()]);
+
+        $response = $this->deleteJson("/api/v1/categories/$category->id");
+        $response->assertStatus(404);
+        $response->assertJsonFragment([
+            'message' => 'Recurso no encontrado'
+        ]);
+    }
+
+    public function test_delete_no_authorized()
+    {
+        $category = Category::factory()->create();
+
+        $response = $this->deleteJson("/api/v1/categories/$category->id");
+        $response->assertStatus(401);
+        $response->assertJsonFragment([
+            'message' => 'Unauthenticated.'
+        ]);
+    }
 
 }

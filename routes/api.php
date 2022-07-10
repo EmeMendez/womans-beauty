@@ -28,6 +28,7 @@ Route::get('/v1/categories', [CategoryController::class, 'index']);
 Route::get('/v1/categories/{category}', [CategoryController::class, 'show']);
 Route::post('/v1/categories', [CategoryController::class, 'store']);
 Route::patch('/v1/categories/{category}', [CategoryController::class, 'update']);
+Route::delete('/v1/categories/{category}', [CategoryController::class, 'delete']);
 
 
 Route::get('/v1/brands', [BrandController::class, 'index']);
