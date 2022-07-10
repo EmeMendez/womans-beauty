@@ -95,7 +95,7 @@ class BrandControllerTest extends TestCase
         $brand = Brand::factory()->make();
 
         $data = [
-            'name' => $brand->name
+            'name'      => $brand->name,
         ];
 
         $response = $this->postJson('/api/v1/brands', $data);
@@ -110,10 +110,12 @@ class BrandControllerTest extends TestCase
             ]
         ]);
         $this->assertDatabaseHas('brands', [
-            'name' => $brand->name
+            'name'      => $brand->name,
+            'status'    => 1
         ]);
         $response->assertJsonFragment([
-            'name' => $brand->name
+            'name'      => $brand->name,
+            'status'    => 1
         ]);
     }
 
