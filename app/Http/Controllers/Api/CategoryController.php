@@ -32,7 +32,11 @@ class CategoryController extends Controller
      */
     public function store(CategoryStoreRequest $request)
     {
-        return new CategoryResource(Category::create($request->only('name')));
+        $category = Category::create([
+            'name'      => $request->name,
+            'status'    => 1
+        ]);
+        return new CategoryResource($category);
     }
 
     public function show(Category $category)

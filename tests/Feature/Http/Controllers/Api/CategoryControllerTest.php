@@ -102,7 +102,7 @@ class CategoryControllerTest extends TestCase
 
         $category = Category::factory()->make();
         $data = [
-          'name' => $category->name
+          'name'    => $category->name,
         ];
 
         $response = $this->postJson('/api/v1/categories', $data);
@@ -117,7 +117,8 @@ class CategoryControllerTest extends TestCase
              ]
         ]);
         $response->assertJsonFragment([
-            'name' => $category->name
+            'name' => $category->name,
+            'status'  => 1
         ]);
     }
 
