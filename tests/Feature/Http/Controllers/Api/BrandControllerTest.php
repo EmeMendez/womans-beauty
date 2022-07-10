@@ -40,6 +40,7 @@ class BrandControllerTest extends TestCase
         $response->assertJsonCount(3, 'data');
         $response->assertStatus(200);
     }
+
     public function test_index_no_authorized()
     {
         Brand::factory(3)->create();
@@ -83,6 +84,60 @@ class BrandControllerTest extends TestCase
         $brand = Brand::factory()->create();
         $response = $this->getJson("/api/v1/brands/$brand->id");
         $response->status(401);
+        $response->assertJsonFragment([
+            'message' => 'Unauthenticated.'
+        ]);
+    }
+
+    public function test_store()
+    {
+        $this->conditionalSetUp();
+        $brand = Brand::factory()->make();
+
+        $data = [
+            'name' => $brand->name
+        ];
+
+        $response = $this->postJson('/api/v1/brands', $data);
+        $response->assertStatus(201);
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+                'status',
+                'created_at',
+                'updated_at'
+            ]
+        ]);
+        $this->assertDatabaseHas('brands', [
+            'name' => $brand->name
+        ]);
+        $response->assertJsonFragment([
+            'name' => $brand->name
+        ]);
+    }
+
+    public function test_store_name_required()
+    {
+        $this->conditionalSetUp();
+        $data = [];
+
+        $response = $this->postJson('/api/v1/brands', $data);
+        $response->assertStatus(422);
+        $response->assertJsonFragment([
+            'message' => 'El nombre es requerido'
+        ]);
+    }
+
+    public function test_store_no_authorized()
+    {
+        $brand = Brand::factory()->make();
+        $data = [
+            'name' => $brand->name
+        ];
+
+        $response = $this->postJson('/api/v1/brands', $data);
+        $response->assertStatus(401);
         $response->assertJsonFragment([
             'message' => 'Unauthenticated.'
         ]);

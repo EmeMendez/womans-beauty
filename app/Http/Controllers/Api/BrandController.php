@@ -8,6 +8,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Brand;
 use App\Http\Resources\BrandResource;
+use App\Http\Requests\BrandStoreRequest;
 
 class BrandController extends Controller
 {
@@ -27,5 +28,10 @@ class BrandController extends Controller
     public function show(Brand $brand)
     {
         return new BrandResource(Brand::findOrFail($brand->id));
+    }
+
+    public function store(BrandStoreRequest $request)
+    {
+        return new BrandResource(Brand::create($request->only('name')));
     }
 }

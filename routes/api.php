@@ -33,3 +33,4 @@ Route::delete('/v1/categories/{category}', [CategoryController::class, 'delete']
 
 Route::get('/v1/brands', [BrandController::class, 'index']);
 Route::get('/v1/brands/{brand}', [BrandController::class, 'show']);
+Route::post('/v1/brands', [BrandController::class, 'store']);
