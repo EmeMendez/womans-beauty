@@ -215,4 +215,41 @@ class BrandControllerTest extends TestCase
             'message' => 'Unauthenticated.'
         ]);
     }
+
+    public function test_delete()
+    {
+        $brand = Brand::factory()->create();
+        $this->conditionalSetUp();
+
+        $response = $this->deleteJson("/api/v1/brands/$brand->id");
+        $response->assertStatus(204);
+        $this->assertDatabaseHas('brands', [
+            'id' => $brand->id,
+            'status' => 0
+        ]);
+    }
+
+    public function test_delete_resource_not_found()
+    {
+        $brand = Brand::factory()->make(['id' => $this->faker->ean8()]);
+        $this->conditionalSetUp();
+
+        $response = $this->deleteJson("/api/v1/brands/$brand->id");
+        $response->assertStatus(404);
+        $response->assertJsonFragment([
+            'message' => 'Recurso no encontrado'
+        ]);
+    }
+
+    public function test_delete_no_authorized()
+    {
+        $brand = Brand::factory()->create();
+
+        $response = $this->deleteJson("/api/v1/brands/$brand->id");
+        $response->assertStatus(401);
+        $response->assertJsonFragment([
+           'message' => 'Unauthenticated.'
+        ]);
+    }
+
 }

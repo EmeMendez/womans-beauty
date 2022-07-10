@@ -42,4 +42,11 @@ class BrandController extends Controller
         $brand->save();
         return new BrandResource($brand);
     }
+
+    public function delete(Brand $brand)
+    {
+        $brand->status = 0;
+        $brand->save();
+        return response()->json([], 204);
+    }
 }

@@ -35,3 +35,4 @@ Route::get('/v1/brands', [BrandController::class, 'index']);
 Route::get('/v1/brands/{brand}', [BrandController::class, 'show']);
 Route::post('/v1/brands', [BrandController::class, 'store']);
 Route::patch('/v1/brands/{brand}', [BrandController::class, 'update']);
+Route::delete('/v1/brands/{brand}', [BrandController::class, 'delete']);
