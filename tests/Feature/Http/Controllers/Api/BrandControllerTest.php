@@ -142,4 +142,77 @@ class BrandControllerTest extends TestCase
             'message' => 'Unauthenticated.'
         ]);
     }
+
+    public function test_update()
+    {
+        $this->conditionalSetUp();
+        $brand = Brand::factory()->create();
+
+        $data = [
+            'name' => $this->faker->word
+        ];
+
+        $response = $this->patchJson("/api/v1/brands/$brand->id", $data);
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+                'status',
+                'created_at',
+                'updated_at'
+            ]
+        ]);
+        $this->assertDatabaseHas('brands', [
+            'name' => $data['name']
+        ]);
+        $response->assertJsonFragment([
+            'name' => $data['name']
+        ]);
+    }
+
+    public function test_update_name_required()
+    {
+        $this->conditionalSetUp();
+        $brand = Brand::factory()->create();
+
+        $data = [];
+
+        $response = $this->patchJson("/api/v1/brands/$brand->id", $data);
+        $response->assertStatus(422);
+        $response->assertJsonFragment([
+            'name' => ['El nombre es requerido']
+        ]);
+    }
+
+    public function test_update_resource_not_found()
+    {
+        $this->conditionalSetUp();
+        $brand = Brand::factory()->make(['id' => $this->faker->ean8()]);
+
+        $data = [
+            'name' => $this->faker->word
+        ];
+
+        $response = $this->patchJson("/api/v1/brands/$brand->id", $data);
+        $response->assertStatus(404);
+        $response->assertJsonFragment([
+            'message' => 'Recurso no encontrado'
+        ]);
+    }
+
+    public function test_update_no_authorized()
+    {
+        $brand = Brand::factory()->create();
+
+        $data = [
+            'name' => $this->faker->word
+        ];
+
+        $response = $this->patchJson("/api/v1/brands/$brand->id", $data);
+        $response->assertStatus(401);
+        $response->assertJsonFragment([
+            'message' => 'Unauthenticated.'
+        ]);
+    }
 }

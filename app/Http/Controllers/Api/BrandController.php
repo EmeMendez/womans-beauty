@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\Brand;
 use App\Http\Resources\BrandResource;
 use App\Http\Requests\BrandStoreRequest;
+use App\Http\Requests\BrandUpdateRequest;
 
 class BrandController extends Controller
 {
@@ -33,5 +34,12 @@ class BrandController extends Controller
     public function store(BrandStoreRequest $request)
     {
         return new BrandResource(Brand::create($request->only('name')));
+    }
+
+    public function update(BrandUpdateRequest $request, Brand $brand)
+    {
+        $brand->name = $request->name;
+        $brand->save();
+        return new BrandResource($brand);
     }
 }
