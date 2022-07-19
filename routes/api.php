@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CategoryController;
 
@@ -36,3 +37,5 @@ Route::get('/v1/brands/{brand}', [BrandController::class, 'show']);
 Route::post('/v1/brands', [BrandController::class, 'store']);
 Route::patch('/v1/brands/{brand}', [BrandController::class, 'update']);
 Route::delete('/v1/brands/{brand}', [BrandController::class, 'delete']);
+
+Route::post('/v1/logout', [LogoutController::class, 'logout']);

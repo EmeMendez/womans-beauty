@@ -14,13 +14,8 @@ class AuthController extends Controller
 {
     public function login(AuthLoginRequest $request)
     {
-      $credentials = [
-        'email'     => $request->email,
-        'password'  => $request->password
-      ];
-      
       $user = User::where('email', $request->email)->first();
-      
+
       if(!$user || !Hash::check($request->password, $user->password)){
         return throw ValidationException::withMessages([
           'email' => 'Estas credenciales no coinciden con nuestros registros.'
